@@ -85,7 +85,7 @@ def students_results():
     # This function processes results stored in a list;
     # perfoms grades summation;
     # converts results into a dict;
-    # and prints report to cdm
+    # and prints report to cmd
     
     # Read data from file
     stream = user_input()

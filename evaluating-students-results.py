@@ -15,7 +15,7 @@ class BadLine(StudentsDataException):
     def __init__(self, message = ""):
         StudentsDataException.__init__(self)
         print("Bad line in file. ", message)
-        #quit()
+        #quit() # Uncomment to terminate program in case of error
 
 
 class FileEmpty(StudentsDataException):
@@ -23,7 +23,7 @@ class FileEmpty(StudentsDataException):
     def __init__(self):
         StudentsDataException.__init__(self)
         print("File empty")
-        #quit()
+        #quit() # Uncomment to terminate program in case of error
 
 
 def user_input():
@@ -40,36 +40,44 @@ def user_input():
 
 def evaluate_file(stream):
     try:
-        line_count = 0
-        data_structure = []
-        for line in stream:
+        line_count = 0      # Store number of lines
+        data_structure = [] # Store valuable data from file
+        print("Data from file:")
+        for line in stream: # Iterate through lines in file
+            
+            # Evaluate lines in a file and print them to cmd
             line_count += 1
             if len(line) == 1:
                 raise BadLine("Line is empty")
             print(line, end = "")
 
             # Read valuable data from lines and evaluate it
-            entries = line.split()
-            if len(entries) < 3:
+            entries = line.split()         # get data from line
+            if len(entries) < 3:           # Check for insufficient data
                 BadLine("Not enough data in line " + str(line_count))
-            elif len(entries) > 3:
+            elif len(entries) > 3:         # Check for excessive data
                 BadLine("Too much data in line " + str(line_count))
-            elif not (entries[0].isalpha() and entries[1].isalpha()):
+            elif not (entries[0].isalpha()\
+                      and entries[1].isalpha()): # Check for incorrect full names
                 BadLine("Incorrect full name in line " + str(line_count))
-            else:
+            else:                          # Check for incorrect grades
                 try:
                     entries[2] = float(entries[2])
                 except:
                     BadLine("Incorrect grade in line " + str(line_count))
                     continue
-            data_structure.append(entries)
+            data_structure.append(entries) # save data to structure
+
         if line_count == 0:
             raise FileEmpty()
+
+    # Deal with exceptions
     except BadLine:
         pass
     except FileEmpty:
-        pass
-    print(data_structure)    
+        pass    
+
+    # Return result
     return data_structure
 
 
@@ -79,7 +87,7 @@ def students_results():
     stream = user_input()
     data_structure = evaluate_file(stream)
 
-    # Convert list into dict summing
+    # Convert list into dict while summing grades
     dict = {}
     for entry in data_structure:
         key = entry[0] + " " + entry[1]
@@ -93,18 +101,11 @@ def students_results():
     # Sorted() returns list, so convert list into dict using comprehension
     dict = {k: v for k, v in sorted(dict.items())}
 
-    print(dict)
+    # Print report to cmd
+    print("\nReport:")
+    for item in dict.items():
+        print(item[0] + "\t" + str(item[1]))
     
-
-def file_output():
-    # Printing to file is here
-    try:
-        s = open(file+".hist", "wt")
-        for entry in characters.items():
-            s.write(entry[0] + " -> " + str(entry[1]) + "\n")
-        s.close()
-    except IOError as e:
-        print("I/O error occurred: ", strerror(e.errno))
     
 
 

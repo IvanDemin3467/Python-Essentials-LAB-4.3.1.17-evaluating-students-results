@@ -40,15 +40,40 @@ def evaluate_file(stream):
     try:
 ##        if len(stream) == 0:
 ##                raise FileEmpty()
-    
+        line_count = 0
+        data_structure = []
         for line in stream:
+            line_count += 1
             if len(line) == 1:
                 raise BadLine("Line is empty")
-                #raise BadLine()
             print(line, end = "")
+
+            # Read valuable data from lines and evaluate it
+            entries = line.split()
+            if len(entries) < 3:
+                print("Not enough data in line " + str(line_count))
+                continue
+            elif len(entries) > 3:
+                print("Too much data in line " + str(line_count))
+                continue
+            elif not (entries[0].isalpha() and entries[1].isalpha()):
+                print("Incorrect full name in line " + str(line_count))
+                continue
+            else:
+                try:
+                    entries[2] = float(entries[2])
+                except:
+                    print("Incorrect grade in line " + str(line_count))
+                    continue
+            data_structure.append(entries)
+        if line_count == 0:
+            raise FileEmpty()
     except BadLine:
         pass
-
+    except FileEmpty:
+        pass
+    print(data_structure)
+    return data_structure
 
 
 def students_results():

@@ -15,6 +15,7 @@ class BadLine(StudentsDataException):
     def __init__(self, message = ""):
         StudentsDataException.__init__(self)
         print("Bad line in file. ", message)
+        #quit()
 
 
 class FileEmpty(StudentsDataException):
@@ -22,6 +23,7 @@ class FileEmpty(StudentsDataException):
     def __init__(self):
         StudentsDataException.__init__(self)
         print("File empty")
+        #quit()
 
 
 def user_input():
@@ -38,8 +40,6 @@ def user_input():
 
 def evaluate_file(stream):
     try:
-##        if len(stream) == 0:
-##                raise FileEmpty()
         line_count = 0
         data_structure = []
         for line in stream:
@@ -51,19 +51,16 @@ def evaluate_file(stream):
             # Read valuable data from lines and evaluate it
             entries = line.split()
             if len(entries) < 3:
-                print("Not enough data in line " + str(line_count))
-                continue
+                BadLine("Not enough data in line " + str(line_count))
             elif len(entries) > 3:
-                print("Too much data in line " + str(line_count))
-                continue
+                BadLine("Too much data in line " + str(line_count))
             elif not (entries[0].isalpha() and entries[1].isalpha()):
-                print("Incorrect full name in line " + str(line_count))
-                continue
+                BadLine("Incorrect full name in line " + str(line_count))
             else:
                 try:
                     entries[2] = float(entries[2])
                 except:
-                    print("Incorrect grade in line " + str(line_count))
+                    BadLine("Incorrect grade in line " + str(line_count))
                     continue
             data_structure.append(entries)
         if line_count == 0:
@@ -72,7 +69,7 @@ def evaluate_file(stream):
         pass
     except FileEmpty:
         pass
-    print(data_structure)
+    print(data_structure)    
     return data_structure
 
 
@@ -80,8 +77,23 @@ def students_results():
     # 
     # File open is here
     stream = user_input()
-    lines = evaluate_file(stream)
-      
+    data_structure = evaluate_file(stream)
+
+    # Convert list into dict summing
+    dict = {}
+    for entry in data_structure:
+        key = entry[0] + " " + entry[1]
+        if key not in dict:
+            dict[key] = entry[2]
+        else:
+            dict[key] += entry[2]
+    
+    # Sort that dict by key
+    # Sorted() requires list, so convert dict into list using .items()
+    # Sorted() returns list, so convert list into dict using comprehension
+    dict = {k: v for k, v in sorted(dict.items())}
+
+    print(dict)
     
 
 def file_output():
